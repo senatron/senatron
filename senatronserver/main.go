@@ -34,8 +34,8 @@ import (
 
 // Config defines configuration options for the server.
 type Config struct {
-	Help   bool
-	HTTP   struct {
+	Help bool
+	HTTP struct {
 		Port                int
 		StaticResourcesPath string
 	}

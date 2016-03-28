@@ -33,5 +33,5 @@ type GlobalContext struct {
 	Templates struct {
 		Index *template.Template
 	}
-	LogOut  io.Writer
+	LogOut io.Writer
 }

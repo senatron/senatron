@@ -20,12 +20,12 @@
 package main
 
 import (
-	"github.com/senatron/senatron/senatronserver/context"
-	"github.com/senatron/senatron/senatronserver/handlers"
-	"github.com/senatron/senatron/senatronserver/middleware"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
 	"github.com/sebest/xff"
+	"github.com/senatron/senatron/senatronserver/context"
+	"github.com/senatron/senatron/senatronserver/handlers"
+	"github.com/senatron/senatron/senatronserver/middleware"
 	"net/http"
 	"path"
 	"path/filepath"

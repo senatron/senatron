@@ -29,7 +29,7 @@ import (
 // should be both written to and read from by middleware, and read
 // from by controllers.
 type LocalContext struct {
-	Logger     *logger.Logger
+	Logger *logger.Logger
 }
 
 var localMutex = sync.Mutex{}
