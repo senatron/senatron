@@ -117,6 +117,9 @@ this:
 [http]
 port = 8080
 static_resources_path = /home/bieber/senatron/static/build/
+
+[sunlight]
+api_key=<YOUR API KEY>
 ```
 
 Then, from the repo's root directory, you can fire up the server by

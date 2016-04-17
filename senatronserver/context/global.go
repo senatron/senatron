@@ -33,5 +33,6 @@ type GlobalContext struct {
 	Templates struct {
 		Index *template.Template
 	}
-	LogOut io.Writer
+	SunlightAPIKey string
+	LogOut         io.Writer
 }

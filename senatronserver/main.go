@@ -23,13 +23,12 @@ import (
 	"fmt"
 	"github.com/bieber/conflag"
 	"github.com/senatron/senatron/senatronserver/context"
+	"github.com/senatron/senatron/senatronserver/sunlight"
 	"golang.org/x/crypto/ssh/terminal"
 	"io"
 	"log"
-	"math/rand"
 	"net/http"
 	"os"
-	"time"
 )
 
 // Config defines configuration options for the server.
@@ -41,6 +40,9 @@ type Config struct {
 	}
 	Log struct {
 		FilePath string
+	}
+	Sunlight struct {
+		APIKey string
 	}
 }
 
@@ -72,10 +74,13 @@ func main() {
 		logOut = fout
 	}
 
-	rand.Seed(time.Now().Unix())
+	// TODO: Remove this
+	vote, err := sunlight.GetVote(config.Sunlight.APIKey, "s45-2016")
+	fmt.Println(vote.RawOutput, err)
 
 	globalContext := &context.GlobalContext{
-		LogOut: logOut,
+		SunlightAPIKey: config.Sunlight.APIKey,
+		LogOut:         logOut,
 	}
 
 	initRoutes(globalContext, config.HTTP.StaticResourcesPath)
@@ -122,6 +127,13 @@ func getConfig() (*Config, *conflag.Config) {
 		ShortFlag('l').
 		LongFlag("log-file").
 		Description("Optional log output file (logs go to stderr by default)")
+
+	parser.Field("Sunlight.APIKey").
+		ShortFlag('a').
+		LongFlag("api-key").
+		FileKey("api_key").
+		Required().
+		Description("Sunlight Foundation API key.")
 
 	return config, parser
 }
