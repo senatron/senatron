@@ -22,6 +22,7 @@ package main
 import (
 	"fmt"
 	"github.com/bieber/conflag"
+	"github.com/senatron/senatron/senatronserver/census"
 	"github.com/senatron/senatron/senatronserver/context"
 	"github.com/senatron/senatron/senatronserver/sunlight"
 	"golang.org/x/crypto/ssh/terminal"
@@ -74,9 +75,47 @@ func main() {
 		logOut = fout
 	}
 
-	// TODO: Remove this
-	vote, err := sunlight.GetVote(config.Sunlight.APIKey, "s45-2016")
-	fmt.Println(vote.RawOutput, err)
+	// TODO: Remove ...
+	vote, err := sunlight.GetVote(config.Sunlight.APIKey, "s396-2009")
+
+	senateVotes := map[string]float64{}
+	popularVotes := map[string]float64{}
+	for _, v := range vote.Voters {
+		population, _ := census.Get(v.Info.State)
+		if existing, ok := senateVotes[v.Vote]; ok {
+			senateVotes[v.Vote] = existing + 1
+			popularVotes[v.Vote] += float64(population) / 2
+		} else {
+			senateVotes[v.Vote] = 1
+			popularVotes[v.Vote] = float64(population) / 2
+		}
+	}
+
+	senateTotal := float64(0)
+	popularTotal := float64(0)
+	for k, v := range senateVotes {
+		senateTotal += v
+		popularTotal += popularVotes[k]
+	}
+
+	fmt.Println("\n" + vote.RollID)
+	fmt.Println(vote.Question)
+	for k := range senateVotes {
+		fmt.Println(k)
+		fmt.Printf(
+			"    Senate: %d/%d (%.2f%%)\n",
+			int(senateVotes[k]),
+			int(senateTotal),
+			senateVotes[k]/senateTotal*100,
+		)
+		fmt.Printf(
+			"    Popular: %d/%d (%.2f%%)\n",
+			int(popularVotes[k]),
+			int(popularTotal),
+			popularVotes[k]/popularTotal*100,
+		)
+	}
+	// ...up to here
 
 	globalContext := &context.GlobalContext{
 		SunlightAPIKey: config.Sunlight.APIKey,

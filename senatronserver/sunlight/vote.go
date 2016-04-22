@@ -20,25 +20,63 @@
 package sunlight
 
 import (
+	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 // Vote describes the outcome of a vote, both in terms of senate and
 // popular vote, as well as the senators and their votes and basic
 // info like the bill ID, date and so on.
 type Vote struct {
-	RawOutput string
+	RollID   string `json:"roll_id"`
+	VotedAt  string `json:"voted_at"`
+	RollType string `json:"roll_type"`
+	Question string `json:"question"`
+	Required string `json:"required"`
+	Result   string `json:"result"`
+
+	// At most one of BillID or NominationID will be non-empty.
+	BillID       string `json:"bill_id"`
+	NominationID string `json:"nomination_id"`
+
+	Voters map[string]struct {
+		Vote string `json:"vote"`
+		Info struct {
+			BioguideID string `json:"bioguide_id"`
+			State      string `json:"state"`
+			Party      string `json:"party"`
+		} `json:"voter"`
+	} `json:"voters"`
 }
+
+// ErrVoteNotFound signals a failure in looking up a given vote,
+// probably because no vote by the given roll ID exists.
+var ErrVoteNotFound = errors.New("No results for that roll ID")
 
 // GetVote returns information about the given rollID, or returns an
 // error if anything goes wrong.
 func GetVote(apiKey string, rollID string) (vote Vote, err error) {
+	fields := strings.Join(
+		[]string{
+			"roll_id",
+			"bill_id",
+			"nomination_id",
+			"roll_type",
+			"question",
+			"required",
+			"result",
+			"voted_at",
+			"voters",
+		},
+		",",
+	)
 	uri, err := buildURI(
 		"votes",
 		map[string]interface{}{
 			"roll_id": rollID,
+			"fields":  fields,
 		},
 	)
 	if err != nil {
@@ -58,12 +96,26 @@ func GetVote(apiKey string, rollID string) (vote Vote, err error) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(response.Body)
+	resultContainer := struct {
+		Results []Vote `json:"results"`
+		Count   int    `json:"count"`
+	}{}
+
+	decoder := json.NewDecoder(response.Body)
+	err = decoder.Decode(&resultContainer)
 	if err != nil {
 		return
 	}
 
-	vote.RawOutput = string(body)
+	if resultContainer.Count == 0 {
+		err = ErrVoteNotFound
+		return
+	} else if resultContainer.Count != 1 {
+		// This should never happen
+		err = errors.New("More than one vote found for a single roll ID")
+		return
+	}
 
+	vote = resultContainer.Results[0]
 	return
 }
