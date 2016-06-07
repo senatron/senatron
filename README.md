@@ -134,34 +134,4 @@ point you can just hit `localhost:8080` (or whatever port you want to
 use) in your browser to test.  Assuming you have your Go binary
 directory added to your path, which I highly recommend.
 
-=========================================================================
-
-My README update that needs to be refined before i make a pull request :)
-
-- Go [here](https://golang.org/dl/) and download the golang installer package for Apple OS X and follow the prompts to install Go on your system.
-
-- Create a directory in your home directory (usually home is ` ~ `, unless you've done something different with your system) and name it whatever you want. I called mine `gocode/`.
-
-- Open up your `.bash_profile` or `.bashrc` or whatever your shell configuration file is, and set the path for Go. I use the bash shell and a `.bash_profile` file, and setting the path looks like this: `export GOPATH=$HOME/gocode`. You add that line in your configuration file. If you use something different for your shell sessions, find out how to "set a path" for your specific set up (usually it starts with `export...`). Make sure the name of the directory you created in the second bullet point is in the path, in case you named it something else besides `gocode/`. After this is done, make sure to either start a new shell session (new terminal/CLI window or tab), or close and reopen the currently open one.
-
-- Then, from `gocode/`, you can run the following command that will actually pull the repo and put things in place for the back end server to be able to run: `go get github.com/senatron/senatron/senatronserver`
-
-- Now that you have the repo, `cd` into it. It should be located inside the gocode directory you made, and should look something like this: `~/gocode/src/github.com/senatron/senatron`. The second `senatron` directory is what you will want to open up in your fav text editor. This directory contains the project.
-
-- Then `cd` one more directory, into `static/`. This is where you run `npm install`. When npm is finished, run `gulp build`. (this assumes you have `node/npm` and `gulp` already installed, go do that first if you don't have it)
-
-- `cd` back up one level to the project root, `~/gocode/src/github.com/senatron/senatron`, and `mkdir` a `config` directory.
-
-- Inside `config`, create a new file called `test.conf`. You will want to add something similar to the following to `test.conf` just to make things a little easier when running the app:
-```
-[http]
-port = 8080
-
-static_resources_path = /Users/<your-user>/<the-go-directory-you-created>/src/github.com/senatron/senatron/static/build/
-```
-
-For the last few steps, you'll want to have two terminal/CLI windows or tabs open.
-
-- `cd` one of the tabs to the `static/` directory and run just `gulp`. Then `cd` with your other tab all the way back up to the Go directory you created in the second bullet point. Mine is called `gocode`. Then `cd` into `bin/`. Finally from `bin` run this command to start the Go server: `./senatronserver --config ../src/github.com/senatron/senatron/config/test.conf` . You may get a dialog that asks you if you want to accept or deny incoming connections, just click accept, and you should be able to see the app running on port 8080 in your browser :)
-
-- You made it! Breathe a sigh of relief :) One tab will run the Go server, which you can kill and restart by doing `^C` and rerunning the `./senatronserver...` command. And then the other tab is where all the front end and `gulp` stuff happens!
+*For more OSX-specific project set up instructions, see here: https://gist.github.com/heyheyjose/9db9e4bb438cfc98883506005355f1d8*

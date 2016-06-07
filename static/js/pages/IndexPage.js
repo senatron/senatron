@@ -29,8 +29,6 @@ export default class IndexPage extends React.Component {
 		return (
 			<div className="container">
 				<p>Ohai</p>
-				<p>Does it work?</p>
-				<p>Yes! It does!</p>
 			</div>
 		);
 	}
