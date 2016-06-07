@@ -133,3 +133,5 @@ Substituting in the path to your config file, of course.  At that
 point you can just hit `localhost:8080` (or whatever port you want to
 use) in your browser to test.  Assuming you have your Go binary
 directory added to your path, which I highly recommend.
+
+*For more OSX-specific project set up instructions, see here: https://gist.github.com/heyheyjose/9db9e4bb438cfc98883506005355f1d8*
