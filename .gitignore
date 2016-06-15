@@ -4,3 +4,6 @@
 node_modules/
 build/
 config/
+.vscode
+.DS_Store
+.idea
